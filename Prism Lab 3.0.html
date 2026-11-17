@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prism Lab · 稜鏡實驗室</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Noto+Serif+TC:wght@400;600;700&family=Dancing+Script:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        /* ===== 全局重置 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0808;
+            font-family: 'Inter', 'Noto Serif TC', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #e8e0d8;
+            padding: 2rem 1.2rem;
+            line-height: 1.8;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+            background: #141110;
+            border-radius: 28px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(245, 203, 160, 0.06);
+            overflow: hidden;
+        }
+
+        /* 稜鏡光線裝飾條 */
+        .prism-bar {
+            height: 5px;
+            background: linear-gradient(90deg, #f5cba0 0%, #dba88a 20%, #7a9bb5 40%, #4a7a9c 60%, #dba88a 80%, #f5cba0 100%);
+            width: 100%;
+            background-size: 200% 100%;
+            animation: prismShift 8s ease-in-out infinite;
+        }
+        @keyframes prismShift {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .inner {
+            padding: 2.8rem 3.2rem 2.8rem;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.4rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(245, 203, 160, 0.08);
+            color: #f5cba0;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.2rem 1.2rem;
+            border-radius: 4px;
+            margin-bottom: 0.3rem;
+            border: 1px solid rgba(245, 203, 160, 0.08);
+            align-self: flex-start;
+        }
+
+        .brand-main {
+            display: flex;
+            align-items: baseline;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .brand-main h1 {
+            font-weight: 700;
+            font-size: 3.6rem;
+            color: #f0e8e0;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .brand-main h1 .hl {
+            background: linear-gradient(135deg, #f5cba0, #dba88a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .brand-sub {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            color: #dba88a;
+            opacity: 0.8;
+            font-weight: 400;
+            letter-spacing: 0.04em;
+            margin-top: -0.1rem;
+        }
+
+        .brand-sub .accent {
+            color: #7a9bb5;
+        }
+
+        .header-right .year {
+            font-size: 0.85rem;
+            color: #4a3a2e;
+            letter-spacing: 0.04em;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.3rem 1.4rem;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .lang-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #4a3a2e;
+            letter-spacing: 0.06em;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.1rem 0.8rem;
+            border-radius: 3px;
+            margin-left: 0.3rem;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* ===== Problem + Solution ===== */
+        .ps-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2.8rem;
+        }
+
+        .ps-card {
+            padding: 1.8rem 2.2rem;
+            border-radius: 16px;
+            transition: 0.2s;
+        }
+        .ps-card.problem {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .ps-card.solution {
+            background: rgba(245, 203, 160, 0.04);
+            border: 1px solid rgba(245, 203, 160, 0.10);
+            box-shadow: 0 4px 24px rgba(245, 203, 160, 0.03);
+        }
+
+        .ps-card .ps-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+        .ps-card.problem .ps-label {
+            color: #5a4a3e;
+        }
+        .ps-card.solution .ps-label {
+            color: #dba88a;
+        }
+
+        .ps-card .ps-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #f0e8e0;
+            margin-bottom: 0.3rem;
+        }
+        .ps-card .ps-text {
+            font-size: 1.05rem;
+            color: #8a7a6d;
+            line-height: 1.8;
+        }
+        .ps-card .ps-text .em {
+            color: #f5cba0;
+            font-weight: 500;
+        }
+        .ps-card.solution .ps-title {
+            color: #f5cba0;
+        }
+
+        /* ===== 輸入區域 ===== */
+        .input-section {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 2rem 2.4rem;
+            margin-bottom: 2.4rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .input-section .is-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #f0e8e0;
+            margin-bottom: 0.1rem;
+        }
+        .input-section .is-sub {
+            font-size: 0.95rem;
+            color: #5a4a3e;
+            margin-bottom: 1.4rem;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem 1.8rem;
+        }
+        .input-grid .full {
+            grid-column: 1 / -1;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: #7a6a5e;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.3rem;
+        }
+        .input-group label .required {
+            color: #dba88a;
+        }
+        .input-group input,
+        .input-group textarea,
+        .input-group select {
+            width: 100%;
+            padding: 0.75rem 1.2rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            font-family: 'Inter', 'Noto Serif TC', sans-serif;
+            font-size: 1rem;
+            transition: 0.3s;
+            outline: none;
+            color: #e8e0d8;
+        }
+        .input-group input:focus,
+        .input-group textarea:focus,
+        .input-group select:focus {
+            border-color: rgba(245, 203, 160, 0.25);
+            box-shadow: 0 0 0 3px rgba(245, 203, 160, 0.04);
+        }
+        .input-group textarea {
+            border-radius: 8px;
+            min-height: 85px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+        .input-group select option {
+            background: #141110;
+            color: #e8e0d8;
+        }
+        .input-group .hint {
+            font-size: 0.8rem;
+            color: #4a3a2e;
+            margin-top: 0.2rem;
+        }
+
+        /* ===== 上傳區 ===== */
+        .upload-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 1.8rem 2.2rem;
+            text-align: center;
+            margin: 0.8rem 0 0.4rem;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .upload-zone:hover {
+            border-color: rgba(245, 203, 160, 0.15);
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .upload-zone .uz-icon {
+            font-size: 2.4rem;
+            display: block;
+            margin-bottom: 0.3rem;
+            opacity: 0.4;
+        }
+        .upload-zone .uz-text {
+            font-size: 1rem;
+            color: #5a4a3e;
+        }
+        .upload-zone .uz-text .hl {
+            color: #dba88a;
+        }
+        .upload-zone .uz-hint {
+            font-size: 0.8rem;
+            color: #3a2a1e;
+            margin-top: 0.2rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f5cba0, #dba88a);
+            color: #141110;
+            border: none;
+            padding: 0.85rem 3.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Inter', 'Noto Serif TC', sans-serif;
+            margin-top: 0.8rem;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(245, 203, 160, 0.15);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            color: #8a7a6d;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 0.6rem 2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: 'Inter', 'Noto Serif TC', sans-serif;
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #f0e8e0;
+        }
+
+        /* ================================================================ */
+        /*  ★★★ 專業報告區 — 完整展開，大氣清晰 ★★★                    */
+        /* ================================================================ */
+
+        .report-output {
+            margin-top: 2.4rem;
+            display: none;
+            animation: fadeUp 0.6s ease;
+        }
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 報告外框 — 像一份真正的文件 */
+        .report-wrapper {
+            background: #1a1715;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 2.8rem 3.2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 報告標頭 */
+        .report-header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            border-bottom: 2px solid rgba(245, 203, 160, 0.15);
+            padding-bottom: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .report-header-section .rh-left .rh-brand {
+            font-size: 0.85rem;
+            color: #dba88a;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .report-header-section .rh-left .rh-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #f0e8e0;
+            letter-spacing: -0.01em;
+        }
+        .report-header-section .rh-left .rh-sub {
+            font-size: 1.05rem;
+            color: #7a6a5e;
+        }
+        .report-header-section .rh-right {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #5a4a3e;
+            line-height: 1.9;
+        }
+        .report-header-section .rh-right .rh-date {
+            color: #8a7a6d;
+        }
+
+        /* 報告章節 */
+        .report-chapter {
+            margin-bottom: 2.4rem;
+        }
+        .report-chapter .ch-number {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #dba88a;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.1rem;
+        }
+        .report-chapter .ch-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #f0e8e0;
+            margin-bottom: 0.2rem;
+            letter-spacing: -0.01em;
+        }
+        .report-chapter .ch-sub {
+            font-size: 1rem;
+            color: #5a4a3e;
+            margin-bottom: 0.8rem;
+        }
+        .report-chapter .ch-body {
+            font-size: 1.1rem;
+            color: #b8b0a8;
+            line-height: 2;
+        }
+        .report-chapter .ch-body .hl-gold {
+            color: #f5cba0;
+            font-weight: 600;
+        }
+        .report-chapter .ch-body .hl-blue {
+            color: #7a9bb5;
+            font-weight: 500;
+        }
+
+        /* 報告內表格 */
+        .report-table-wrap {
+            overflow-x: auto;
+            margin: 0.8rem 0 0.4rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+            min-width: 600px;
+        }
+        .report-table th {
+            background: rgba(255, 255, 255, 0.04);
+            color: #8a7a6d;
+            font-weight: 600;
+            text-align: left;
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .report-table td {
+            padding: 0.7rem 1.2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: #c8c0b8;
+            font-size: 0.95rem;
+        }
+        .report-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .report-table .highlight-row td {
+            color: #f5cba0;
+            font-weight: 500;
+        }
+        .report-table .up {
+            color: #7ab89a;
+        }
+        .report-table .down {
+            color: #c48a7a;
+        }
+
+        /* 方案卡片 */
+        .plan-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.4rem;
+            margin: 0.8rem 0 0.4rem;
+        }
+        .plan-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.4rem 1.6rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.2s;
+        }
+        .plan-card:hover {
+            border-color: rgba(245, 203, 160, 0.12);
+        }
+        .plan-card .pc-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #dba88a;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .plan-card .pc-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f0e8e0;
+            margin: 0.1rem 0 0.2rem;
+        }
+        .plan-card .pc-detail {
+            font-size: 0.95rem;
+            color: #8a7a6d;
+            line-height: 1.8;
+        }
+        .plan-card .pc-detail .pc-tag {
+            display: inline-block;
+            background: rgba(245, 203, 160, 0.08);
+            color: #f5cba0;
+            padding: 0.05rem 0.7rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-right: 0.2rem;
+        }
+        .plan-card.recommended {
+            border-color: rgba(245, 203, 160, 0.2);
+            background: rgba(245, 203, 160, 0.04);
+            box-shadow: 0 4px 20px rgba(245, 203, 160, 0.04);
+        }
+        .plan-card.recommended .pc-badge {
+            display: inline-block;
+            background: #f5cba0;
+            color: #141110;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.05rem 0.9rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* 結論區 */
+        .conclusion-block {
+            background: rgba(245, 203, 160, 0.04);
+            border-radius: 12px;
+            padding: 1.4rem 1.8rem;
+            border-left: 4px solid #dba88a;
+            margin: 0.8rem 0 0.2rem;
+        }
+        .conclusion-block .cb-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #f0e8e0;
+            margin-bottom: 0.1rem;
+        }
+        .conclusion-block .cb-body {
+            font-size: 1.05rem;
+            color: #b8b0a8;
+            line-height: 1.9;
+        }
+
+        /* 資料來源 */
+        .sources-block {
+            margin-top: 1.6rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.8rem;
+            color: #4a3a2e;
+            line-height: 1.9;
+        }
+        .sources-block .src-title {
+            font-weight: 600;
+            color: #5a4a3e;
+            margin-bottom: 0.1rem;
+        }
+        .sources-block .src-item {
+            color: #4a3a2e;
+        }
+
+        /* 報告底部 */
+        .report-footer-section {
+            margin-top: 1.6rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: #4a3a2e;
+        }
+
+        /* ===== 資源連結 ===== */
+        .resources-section {
+            margin: 2.4rem 0 1.6rem;
+            padding-top: 1.6rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .resources-section .rs-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #f0e8e0;
+            margin-bottom: 0.2rem;
+        }
+        .resources-section .rs-sub {
+            font-size: 0.95rem;
+            color: #5a4a3e;
+            margin-bottom: 1rem;
+        }
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem;
+        }
+        .resource-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            text-decoration: none;
+            color: #8a7a6d;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .resource-link:hover {
+            border-color: rgba(245, 203, 160, 0.15);
+            color: #f0e8e0;
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .resource-link .rl-icon {
+            font-size: 1.4rem;
+            opacity: 0.5;
+        }
+
+        /* ===== 聯絡區 ===== */
+        .contact-section {
+            background: rgba(245, 203, 160, 0.04);
+            border-radius: 16px;
+            padding: 2rem 2.4rem;
+            margin: 1.6rem 0 1.2rem;
+            border: 1px solid rgba(245, 203, 160, 0.06);
+        }
+        .contact-section .ct-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #f0e8e0;
+            margin-bottom: 0.1rem;
+        }
+        .contact-section .ct-sub {
+            font-size: 0.95rem;
+            color: #5a4a3e;
+            margin-bottom: 0.8rem;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.8rem 1.2rem;
+        }
+        .contact-grid .full {
+            grid-column: 1 / -1;
+        }
+        .contact-grid .input-group label {
+            font-size: 0.85rem;
+        }
+        .contact-grid .input-group input {
+            padding: 0.6rem 1rem;
+            font-size: 0.95rem;
+        }
+        .contact-motivation {
+            font-size: 0.95rem;
+            color: #dba88a;
+            font-style: italic;
+            text-align: center;
+            margin-top: 0.6rem;
+        }
+
+        .brand-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1.2rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+        .brand-footer .bf-brand {
+            font-weight: 600;
+            font-size: 1.3rem;
+            color: #dba88a;
+            letter-spacing: 0.04em;
+        }
+        .brand-footer .bf-brand .bf-sub {
+            font-weight: 400;
+            font-size: 0.9rem;
+            color: #4a3a2e;
+            margin-left: 0.4rem;
+        }
+        .brand-footer .bf-tagline {
+            font-size: 1rem;
+            color: #4a3a2e;
+            letter-spacing: 0.06em;
+            font-style: italic;
+        }
+
+        /* ===== 響應式 ===== */
+        @media (max-width: 900px) {
+            .inner {
+                padding: 2rem 1.6rem;
+            }
+            .ps-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+            .plan-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            .report-wrapper {
+                padding: 1.8rem 1.4rem;
+            }
+            .brand-main h1 {
+                font-size: 2.6rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 0.8rem 0.4rem;
+            }
+            .inner {
+                padding: 1.2rem 1rem;
+            }
+            .header {
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+            .brand-main h1 {
+                font-size: 2.2rem;
+            }
+            .brand-sub {
+                font-size: 1.2rem;
+            }
+            .header-right {
+                text-align: left;
+                width: 100%;
+            }
+            .plan-grid {
+                grid-template-columns: 1fr;
+            }
+            .report-wrapper {
+                padding: 1.2rem 1rem;
+            }
+            .report-header-section .rh-left .rh-title {
+                font-size: 1.6rem;
+            }
+            .report-chapter .ch-title {
+                font-size: 1.3rem;
+            }
+            .report-table {
+                font-size: 0.85rem;
+                min-width: 400px;
+            }
+            .report-table th,
+            .report-table td {
+                padding: 0.4rem 0.6rem;
+            }
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+            .brand-footer {
+                flex-direction: column;
+                text-align: center;
+            }
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- 稜鏡光線裝飾條 -->
+        <div class="prism-bar"></div>
+
+        <div class="inner">
+
+            <!-- ===== HEADER ===== -->
+            <div class="header">
+                <div class="header-left">
+                    <div class="brand-tag">
+                        <span style="font-size:0.7rem;">✦</span> PRISM LAB
+                        <span class="lang-tag">稜鏡實驗室</span>
+                    </div>
+                    <div class="brand-main">
+                        <h1>Prism <span class="hl">Lab</span></h1>
+                    </div>
+                    <div class="brand-sub">
+                        Your Pricing Strategy Partner
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="year">v2.0 · 2026</div>
+                </div>
+            </div>
+
+            <!-- ===== PROBLEM + SOLUTION ===== -->
+            <div class="ps-grid">
+                <div class="ps-card problem">
+                    <div class="ps-label"><span>⚡</span> The Problem</div>
+                    <div class="ps-title">數據很多，但不知道怎麼定價</div>
+                    <div class="ps-text">
+                        定價團隊擁有競爭者價格、成本數據、市場報告，但依然不清楚<br />
+                        — <span class="em">該如何根據公司定位、競爭態勢、市場趨勢等多元因素，制定出最具競爭力且符合利潤目標的價格？</span>
+                    </div>
+                </div>
+                <div class="ps-card solution">
+                    <div class="ps-label"><span>✦</span> My Solution</div>
+                    <div class="ps-title">Prism Lab · 稜鏡實驗室</div>
+                    <div class="ps-text">
+                        像稜鏡折射光線一樣，<span class="em">拆解數據、解析市場、折射出多種定價方案</span>。<br />
+                        整合競爭者數據、成本結構、市場定位、行業趨勢於一個流暢的工作流程。
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 輸入區域 ===== -->
+            <div class="input-section">
+                <div class="is-title">📊 輸入公司與市場資訊</div>
+                <div class="is-sub">請填寫以下資訊，我們將為你進行專業的定價分析</div>
+
+                <div class="input-grid">
+                    <div class="input-group full">
+                        <label>公司名稱 <span class="required">*</span></label>
+                        <input type="text" id="companyName" placeholder="請輸入你的公司名稱" />
+                    </div>
+                    <div class="input-group">
+                        <label>產業類別 <span class="required">*</span></label>
+                        <select id="industry">
+                            <option value="">請選擇</option>
+                            <option value="零售與消費品">零售與消費品</option>
+                            <option value="時尚與奢侈品">時尚與奢侈品</option>
+                            <option value="電商與數位零售">電商與數位零售</option>
+                            <option value="食品與飲料">食品與飲料</option>
+                            <option value="健康與美容">健康與美容</option>
+                            <option value="電子與科技">電子與科技</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>公司規模 <span class="required">*</span></label>
+                        <select id="scale">
+                            <option value="">請選擇</option>
+                            <option value="小型 (1–50 人)">小型 (1–50 人)</option>
+                            <option value="中型 (50–500 人)">中型 (50–500 人)</option>
+                            <option value="大型 (500+ 人)">大型 (500+ 人)</option>
+                        </select>
+                    </div>
+                    <div class="input-group full">
+                        <label>業務描述 <span class="required">*</span></label>
+                        <textarea id="businessDesc" placeholder="請描述你的公司業務、主要產品/服務、目標市場、品牌定位等"></textarea>
+                    </div>
+                    <div class="input-group full">
+                        <label>定價挑戰與目標 <span class="required">*</span></label>
+                        <textarea id="pricingChallenge" placeholder="請描述你目前面臨的定價挑戰，以及希望達成的目標"></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>主要競爭對手</label>
+                        <input type="text" id="competitors" placeholder="請列出 3–5 家主要競爭對手" />
+                    </div>
+                    <div class="input-group">
+                        <label>目標顧客輪廓</label>
+                        <input type="text" id="targetCustomer" placeholder="ex: 25–40 歲都會女性，重視品質與設計" />
+                    </div>
+
+                    <div class="input-group full">
+                        <label>上傳數據檔案 (Excel / CSV)</label>
+                        <div class="upload-zone" id="uploadZone">
+                            <span class="uz-icon">📁</span>
+                            <div class="uz-text">拖曳檔案至此，或 <span class="hl">點擊上傳</span></div>
+                            <div class="uz-hint">支援 .xlsx, .xls, .csv — 包含競爭者價格、成本數據、銷售記錄等</div>
+                            <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none;" />
+                        </div>
+                    </div>
+
+                    <div class="input-group full" style="display:flex; gap:0.8rem; flex-wrap:wrap; align-items:center;">
+                        <button class="btn-primary" id="analyzeBtn">✦ 開始分析</button>
+                        <button class="btn-secondary" id="exportBtn">📄 匯出報告 (Docx)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================================================================ -->
+            <!--  ★★★ 專業報告區 — 完整展開，大氣清晰 ★★★                    -->
+            <!-- ================================================================ -->
+            <div class="report-output" id="reportOutput">
+
+                <div class="report-wrapper">
+
+                    <!-- 報告標頭 -->
+                    <div class="report-header-section">
+                        <div class="rh-left">
+                            <div class="rh-brand">✦ Prism Lab · 稜鏡實驗室</div>
+                            <div class="rh-title">定價策略分析報告</div>
+                            <div class="rh-sub">Pricing Strategy Analysis Report</div>
+                        </div>
+                        <div class="rh-right">
+                            <div class="rh-date" id="reportDate">報告日期：2026年7月21日</div>
+                            <div id="reportId">報告編號：PL-2026-07-21-001</div>
+                            <div>機密 · 僅供內部使用</div>
+                        </div>
+                    </div>
+
+                    <!-- 報告內容 -->
+                    <div id="reportBody">
+
+                        <!-- 第一章：市場環境 -->
+                        <div class="report-chapter">
+                            <div class="ch-number">第一章</div>
+                            <div class="ch-title">香港市場環境分析</div>
+                            <div class="ch-sub">Hong Kong Market Environment</div>
+                            <div class="ch-body" id="chMarket">
+                                <p>根據香港政府統計處數據，香港零售市場正處於穩定復甦階段：</p>
+                                <ul style="margin-left:1.2rem; margin-top:0.3rem; list-style-type:'✦ '; line-height:2.2;">
+                                    <li>2026年3月零售總銷貨價值：<span class="hl-gold">339億港元</span>，按年上升 <span class="hl-gold">+12.8%</span></li>
+                                    <li>2026年5月零售業總銷貨價值按年上升 <span class="hl-gold">+7.9%</span></li>
+                                    <li>網上銷售佔比持續增長，2026年5月達 <span class="hl-gold">10.1%</span></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 市場數據表格 -->
+                        <div class="report-chapter">
+                            <div class="ch-number">市場趨勢</div>
+                            <div class="ch-title">零售類別表現分析</div>
+                            <div class="ch-sub">2026年3月 vs 2025年3月 · 按年變動</div>
+                            <div class="report-table-wrap">
+                                <table class="report-table" id="marketTable">
+                                    <thead>
+                                        <tr>
+                                            <th>類別</th>
+                                            <th>按年變動</th>
+                                            <th>市場信號</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>汽車及汽車零件</td>
+                                            <td class="up">+80.8%</td>
+                                            <td>強勁復甦（政策驅動）</td>
+                                        </tr>
+                                        <tr>
+                                            <td>電器及其他耐用消費品</td>
+                                            <td class="up">+30.1%</td>
+                                            <td>消費升級</td>
+                                        </tr>
+                                        <tr>
+                                            <td>珠寶首飾、鐘錶及名貴禮物</td>
+                                            <td class="up">+27.2%</td>
+                                            <td>奢侈品需求回升</td>
+                                        </tr>
+                                        <tr>
+                                            <td>服裝</td>
+                                            <td class="up">+8.3%</td>
+                                            <td>時尚消費回暖</td>
+                                        </tr>
+                                        <tr>
+                                            <td>藥物及化妝品</td>
+                                            <td class="up">+3.1%</td>
+                                            <td>健康美容穩定</td>
+                                        </tr>
+                                        <tr>
+                                            <td>燃料</td>
+                                            <td class="down">-14.2%</td>
+                                            <td>電動車普及影響</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="font-size:0.75rem; color:#3a2a1e; margin-top:0.3rem;">
+                                資料來源：香港政府統計處 · 零售業銷貨額統計
+                            </div>
+                        </div>
+
+                        <!-- 第二章：競爭格局 -->
+                        <div class="report-chapter">
+                            <div class="ch-number">第二章</div>
+                            <div class="ch-title">競爭格局與定價策略</div>
+                            <div class="ch-sub">Competitive Landscape &amp; Pricing Strategy</div>
+                            <div class="ch-body" id="chCompetitor">
+                                <p><span class="hl-gold">競爭強度評估：</span></p>
+                                <p style="margin:0.2rem 0 0.4rem;">根據您提供的競爭者資訊，該產業在香港市場處於 <span class="hl-gold">中高度競爭狀態</span>。</p>
+                                <p><span class="hl-gold">市場定位建議：</span></p>
+                                <p style="margin:0.2rem 0 0.4rem;">若您的品牌定位為目標顧客群，建議採取 <span class="hl-gold">「差異化定價 + 品牌溢價」</span> 策略，在品質與服務上建立區隔。</p>
+                            </div>
+                        </div>
+
+                        <!-- 第三章：定價方案 -->
+                        <div class="report-chapter">
+                            <div class="ch-number">第三章</div>
+                            <div class="ch-title">定價建議方案</div>
+                            <div class="ch-sub">Pricing Recommendations</div>
+                            <div class="plan-grid" id="planGrid">
+                                <div class="plan-card">
+                                    <div class="pc-label">方案 A</div>
+                                    <div class="pc-name">市場滲透定價</div>
+                                    <div class="pc-detail">
+                                        <span class="pc-tag">價格</span> 市價的 85–95%<br />
+                                        <span class="pc-tag">適合</span> 擴大市佔率<br />
+                                        <span class="pc-tag">風險</span> 利潤空間較小
+                                    </div>
+                                </div>
+                                <div class="plan-card recommended">
+                                    <div class="pc-label">✦ 推薦方案</div>
+                                    <div class="pc-name">價值導向定價</div>
+                                    <div class="pc-detail">
+                                        <span class="pc-tag">價格</span> 市價的 100–115%<br />
+                                        <span class="pc-tag">適合</span> 品牌具差異化優勢<br />
+                                        <span class="pc-tag">風險</span> 需較強價值溝通
+                                    </div>
+                                </div>
+                                <div class="plan-card">
+                                    <div class="pc-label">方案 C</div>
+                                    <div class="pc-name">動態定價策略</div>
+                                    <div class="pc-detail">
+                                        <span class="pc-tag">價格</span> 根據市場動態調整<br />
+                                        <span class="pc-tag">適合</span> 數據驅動的零售環境<br />
+                                        <span class="pc-tag">風險</span> 執行複雜度較高
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-top:0.6rem; font-size:1rem; color:#8a7a6d;">
+                                💡 綜合考量產業特性與競爭環境，<span class="hl-gold">方案 B（價值導向定價）</span> 為優先推薦。
+                            </div>
+                        </div>
+
+                        <!-- 結論與行動建議 -->
+                        <div class="report-chapter">
+                            <div class="ch-number">結論</div>
+                            <div class="ch-title">行動建議</div>
+                            <div class="conclusion-block">
+                                <div class="cb-title">🎯 短期行動（0–3 個月）</div>
+                                <div class="cb-body">測試 1–2 個定價方案進行市場驗證（A/B Testing），蒐集顧客對價格的敏感度數據。</div>
+                            </div>
+                            <div class="conclusion-block" style="border-left-color:#7a9bb5;">
+                                <div class="cb-title">📈 中期策略（3–12 個月）</div>
+                                <div class="cb-body">根據測試結果選擇最適定價模式，建立價格監控機制，追蹤競爭者動態。</div>
+                            </div>
+                            <div class="conclusion-block" style="border-left-color:#f5cba0;">
+                                <div class="cb-title">🚀 長期布局（1 年以上）</div>
+                                <div class="cb-body">建立數據驅動的定價決策系統，結合 AI 技術進行即時定價優化。</div>
+                            </div>
+                        </div>
+
+                        <!-- 資料來源 -->
+                        <div class="sources-block">
+                            <div class="src-title">📚 資料來源</div>
+                            <div class="src-item">• 香港政府統計處 · 零售業銷貨額統計（2026）</div>
+                            <div class="src-item">• 香港財經時報 · 零售市場分析（2026）</div>
+                            <div class="src-item">• KPMG x GS1 · AI 時代零售報告（2025）</div>
+                            <div class="src-item">• 環聯 · 香港消費者脈搏調查（2025）</div>
+                            <div class="src-item">• Statista · 全球零售市場數據（2026）</div>
+                        </div>
+
+                        <!-- 報告底部 -->
+                        <div class="report-footer-section">
+                            <div>報告生成日期：<span id="footerDate">2026年7月21日</span></div>
+                            <div>分析引擎：Prism Lab v2.0 · 稜鏡實驗室</div>
+                            <div style="color:#3a2a1e;">✧ 本報告由 AI 輔助生成，建議結合專業判斷使用</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== 資源連結 ===== -->
+            <div class="resources-section">
+                <div class="rs-title">🔗 商業靈感與資源</div>
+                <div class="rs-sub">最新的市場報告、趨勢分析與商業洞見</div>
+                <div class="resources-grid">
+                    <a href="https://www.censtatd.gov.hk/en/web_table.html?id=620-67001" target="_blank" class="resource-link">
+                        <span class="rl-icon">📊</span> 香港零售業統計數據
+                    </a>
+                    <a href="https://www.gs1hk.org/zh-cn/press-release/survey_report_KPMGxGS1HK2025" target="_blank" class="resource-link">
+                        <span class="rl-icon">📑</span> AI 與零售趨勢 · KPMG
+                    </a>
+                    <a href="https://www.businesstimes.com.hk/articles/293573" target="_blank" class="resource-link">
+                        <span class="rl-icon">📈</span> 香港零售市場分析
+                    </a>
+                    <a href="https://www.statista.com/statistics/" target="_blank" class="resource-link">
+                        <span class="rl-icon">📉</span> Statista · 全球市場數據
+                    </a>
+                    <a href="https://hbr.org/topic/pricing" target="_blank" class="resource-link">
+                        <span class="rl-icon">🧠</span> 哈佛商業評論 · 定價策略
+                    </a>
+                    <a href="https://www.mckinsey.com/featured-insights" target="_blank" class="resource-link">
+                        <span class="rl-icon">💡</span> 麥肯錫 · 產業洞察
+                    </a>
+                </div>
+            </div>
+
+            <!-- ===== 聯絡區 ===== -->
+            <div class="contact-section">
+                <div class="ct-title">📬 與我們聯繫</div>
+                <div class="ct-sub">留下你的聯絡方式，我們將為你提供更深入的定價策略諮詢</div>
+                <form id="contactForm" action="https://formspree.io/f/xpznkzzv" method="POST">
+                    <div class="contact-grid">
+                        <div class="input-group">
+                            <label>姓名 <span class="required">*</span></label>
+                            <input type="text" name="name" id="contactName" placeholder="你的姓名" required />
+                        </div>
+                        <div class="input-group">
+                            <label>公司名稱</label>
+                            <input type="text" name="company" id="contactCompany" placeholder="你的公司" />
+                        </div>
+                        <div class="input-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input type="email" name="email" id="contactEmail" placeholder="your@email.com" required />
+                        </div>
+                        <div class="input-group full">
+                            <label>需求描述</label>
+                            <textarea name="message" id="contactNeed" placeholder="請描述你希望我們如何協助你" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="contact-motivation">
+                        ✦ Leave your phone number, and we'll reach out within 24 hours to help you unlock your pricing potential ✦
+                    </div>
+                    <div style="text-align:right; margin-top:0.8rem;">
+                        <button type="submit" class="btn-primary" style="padding:0.5rem 2rem; font-size:0.85rem;">📩 送出</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ===== FOOTER ===== -->
+            <div class="brand-footer">
+                <div class="bf-brand">
+                    ✦ Prism Lab
+                    <span class="bf-sub">· 稜鏡實驗室</span>
+                </div>
+                <div class="bf-tagline">Refract data into clarity.</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!--  JAVASCRIPT                                                   -->
+    <!-- ============================================================ -->
+    <script>
+        // ===== 上傳功能 =====
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadZone.addEventListener('click', function() {
+            fileInput.click();
+        });
+        uploadZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'rgba(245, 203, 160, 0.3)';
+            this.style.background = 'rgba(255,255,255,0.04)';
+        });
+        uploadZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'rgba(255,255,255,0.06)';
+            this.style.background = 'transparent';
+        });
+        uploadZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = 'rgba(255,255,255,0.06)';
+            this.style.background = 'transparent';
+            if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) handleFile(this.files[0]);
+        });
+
+        function handleFile(file) {
+            const text = uploadZone.querySelector('.uz-text');
+            text.innerHTML = '✅ 已上傳：<span class="hl">' + file.name + '</span> (' + (file.size / 1024).toFixed(1) +
+            ' KB)';
+            uploadZone.querySelector('.uz-hint').textContent = '檔案已就緒，點擊「開始分析」進行定價策略解析';
+        }
+
+        // ===== 分析功能 =====
+        document.getElementById('analyzeBtn').addEventListener('click', function() {
+            const companyName = document.getElementById('companyName').value || '貴公司';
+            const industry = document.getElementById('industry').value || '零售與消費品';
+            const scale = document.getElementById('scale').value || '中型企業';
+            const businessDesc = document.getElementById('businessDesc').value || '正在發展中的品牌';
+            const pricingChallenge = document.getElementById('pricingChallenge').value || '希望找到更具競爭力的定價策略';
+            const competitors = document.getElementById('competitors').value || '市場上的主要競爭者';
+            const targetCustomer = document.getElementById('targetCustomer').value || '一般消費者';
+
+            // 更新日期
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('zh-HK', { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('reportDate').textContent = '報告日期：' + dateStr;
+            document.getElementById('footerDate').textContent = dateStr;
+            document.getElementById('reportId').textContent = '報告編號：PL-' + now.toISOString().slice(0, 10) + '-001';
+
+            // 更新第一章
+            document.getElementById('chMarket').innerHTML = `
+                        <p>根據香港政府統計處數據，香港零售市場正處於穩定復甦階段：</p>
+                        <ul style="margin-left:1.2rem; margin-top:0.3rem; list-style-type:'✦ '; line-height:2.2;">
+                            <li>2026年3月零售總銷貨價值：<span class="hl-gold">339億港元</span>，按年上升 <span class="hl-gold">+12.8%</span></li>
+                            <li>2026年5月零售業總銷貨價值按年上升 <span class="hl-gold">+7.9%</span></li>
+                            <li>網上銷售佔比持續增長，2026年5月達 <span class="hl-gold">10.1%</span></li>
+                            <li>針對 <span class="hl-gold">「${industry}」</span> 產業，香港市場呈現 <span class="hl-gold">穩定復甦</span> 態勢</li>
+                        </ul>
+                    `;
+
+            // 更新第二章
+            document.getElementById('chCompetitor').innerHTML = `
+                        <p><span class="hl-gold">競爭強度評估：</span></p>
+                        <p style="margin:0.2rem 0 0.4rem;">根據您提供的競爭者資訊（${competitors || '市場主要競爭者'}），該產業在香港市場處於 <span class="hl-gold">中高度競爭狀態</span>。</p>
+                        <p><span class="hl-gold">市場定位建議：</span></p>
+                        <p style="margin:0.2rem 0 0.4rem;">若您的品牌定位為「${targetCustomer || '目標顧客群'}」，建議採取 <span class="hl-gold">「差異化定價 + 品牌溢價」</span> 策略，在品質與服務上建立區隔。</p>
+                        <p style="margin-top:0.3rem; font-size:0.95rem; color:#8a7a6d;">💡 參考 ${industry} 產業的平均毛利率與競爭格局，建議價格區間為 <span class="hl-gold">市價的 90–115%</span>。</p>
+                    `;
+
+            // 顯示報告
+            const reportOutput = document.getElementById('reportOutput');
+            reportOutput.style.display = 'block';
+            reportOutput.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // ===== 匯出報告 =====
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            const reportOutput = document.getElementById('reportOutput');
+            if (reportOutput.style.display === 'none') {
+                alert('請先點擊「開始分析」生成報告再匯出。');
+                return;
+            }
+
+            // 取得報告內容（純文字版本）
+            const reportBody = document.getElementById('reportBody');
+            const textContent = reportBody.textContent || '';
+
+            // 建立整齊的報告格式
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('zh-HK', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            const fullReport = `
+        ═══════════════════════════════════════════════════════════════════
+                          Prism Lab · 稜鏡實驗室
+                        定價策略分析報告
+                        Pricing Strategy Analysis Report
+        ═══════════════════════════════════════════════════════════════════
+
+        報告日期：${dateStr}
+        報告編號：PL-${now.toISOString().slice(0, 10)}-001
+        機密 · 僅供內部使用
+
+        ═══════════════════════════════════════════════════════════════════
+
+        ${textContent}
+
+        ═══════════════════════════════════════════════════════════════════
+
+        資料來源：
+        • 香港政府統計處 · 零售業銷貨額統計（2026）
+        • 香港財經時報 · 零售市場分析（2026）
+        • KPMG x GS1 · AI 時代零售報告（2025）
+        • 環聯 · 香港消費者脈搏調查（2025）
+        • Statista · 全球零售市場數據（2026）
+
+        報告生成日期：${dateStr}
+        分析引擎：Prism Lab v2.0 · 稜鏡實驗室
+        ✧ 本報告由 AI 輔助生成，建議結合專業判斷使用
+            `;
+
+            const blob = new Blob([fullReport], { type: 'application/msword;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Prism_Lab_定價策略報告_${now.toISOString().slice(0, 10)}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('✅ 報告已匯出為 Doc 格式');
+        });
+
+        // ===== 聯絡表單提交 (Formspree) =====
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const company = document.getElementById('contactCompany').value.trim();
+            const message = document.getElementById('contactNeed').value.trim();
+
+            if (!name || !email) {
+                alert('請填寫姓名和 Email');
+                return;
+            }
+
+            // 使用 Formspree 發送
+            const formData = new FormData(this);
+
+            fetch('https://formspree.io/f/xpznkzzv', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('✅ 感謝你的聯絡！我們將在 24 小時內回覆你。\n\nThank you for reaching out! We\'ll get back to you within 24 hours.');
+                        this.reset();
+                    } else {
+                        alert('❌ 送出失敗，請稍後再試。');
+                    }
+                })
+                .catch(error => {
+                    alert('❌ 送出失敗，請檢查網路連線。');
+                });
+        });
+    </script>
+
+</body>
+</html>
